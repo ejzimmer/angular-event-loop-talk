@@ -39,31 +39,15 @@
 		<div class="reveal">
 			<div class="slides">
 				<section>
-					<div class="mask">
-						<svg class="title" viewBox="0 0 100 50" style="width: 80%">
-							<path id="curve" d="M 10 50 a 40 40 0 0 1 80 0" fill="transparent" />
-							<text font-family="cursive">
-								<textPath font-size=".5em" textLength="125" xlink:href="#curve">
-									Further Adventures of
-								</textPath>
-							</text>
-						</svg>
-					</div>
-					<h1>The Event Loop</h1>
+          <div style="display: flex">
+            <div style="font-size: 6em; text-align: left; margin: auto; position: relative; font-family: serif; text-shadow: 3px 3px #424f71">
+              <div>Angular,</div>
+              <div style="padding-left: 1em">The Event Loop,</div>
+              <div style="position: absolute; font-size: 4em; top: 1rem; left: -4rem; color: #f0f; z-index: -1; opacity: .6; font-family: cursive; text-shadow: none">&</div>
+              <div style="padding-left: 2em">You</div>
+            </div>
+          </div>
 					<div class="twitter">@erinjzimmer</div>
-				</section>
-				<section data-transition="fade-out" style="transition-duration: 10s">
-					<div class="fancy">The story so far...</div>
-				</section>
-				<section data-transition="fade-in" style="transition-duration: 10s">
-					<h2>what the heck is the event loop anyway?</h2>
-					<div style="font-size: 2em">@philip_roberts</div>
-					<img src="css/whattheheck.png" style="width: 100%; margin-top: 40px" />
-				</section>
-				<section data-transition="fade-in" style="transition-duration: 1s">
-					<h2>what the heck is the event loop anyway?</h2>
-					<div style="font-size: 2em">@philip_roberts</div>
-					<img src="css/onfire.png" style="width: 100%; margin: auto; margin-top: 40px" />
 				</section>
 				<section>
 					<pre><code data-noescape class="js" style="font-size: 4em">
@@ -93,29 +77,6 @@ document.body.addEventListener('keydown', (event) => {</div>
 				</section>
 				<section>
 					<div class="text">What does <code style="font-size: 1.2em">execute(<span class="variable-name">task</span>)</code> do?</div>
-				</section>
-				<section>
-					<div class="text">And what about <code style="font-size: 1.5em" class="variable-name">taskQueue</code>?</div>
-				</section>
-				<section>
-					<div class="browser-list">
-						<img src="css/chrome-logo.png" />
-						<img src="css/ie-logo.png" />
-						<img src="css/firefox-logo.png" />
-						<img src="css/netscape-logo.png" />
-						<img src="css/safari-logo.png" />
-					</div>
-					<img class="fragment logo" src="css/nodejs.png" style="width: 80%; margin-bottom: 2em;" />
-					<div class="fragment logo" style="background-image: url('css/cogs.png'); 
-											background-size: contain; 
-											background-repeat: no-repeat; 
-											font-size: 5em; 
-											background-position: center;
-											width: 80%;
-											padding: 5vh;
-											text-shadow: 2px 2px var(--background-start)">
-						Webworkers
-					</div>
 				</section>
 				<section data-background-image="css/glastonbury.jpg">
 					<div class="glastonbury">
@@ -270,162 +231,35 @@ while (true) {
 					</code></pre>
 				</section>
 				<section>
-					<div class="text">... but what about Node?</div>
+					<div style="font-size: 3.3em">What does this have to do with Angular?</div>
+        </section>
+        <section>
+          <pre><code class="html">
+<my-component>
+  <ul>
+    <li *ngFor="let cat in cats"></li>
+  </ul>
+</my-component>
+          </code></pre>
+        </section>
+				<section>
+					Main uses of framework = link between DOM & js
+					Need to know _when_ to update the DOM. 
 				</section>
 				<section>
-					<img class="border full-page" src="css/good-news-everyone.jpg" />
+					different frameworks do this differently - React, you tell it.
+					Vue - getters & setters
 				</section>
 				<section>
-					<div class="list-container" style="font-size: 2em;">
-						<ul>
-							<li class="fragment">No script parsing events</li>
-							<li class="fragment">No pesky user interactions</li>
-							<li class="fragment">No animation frame callbacks</li>
-							<li class="fragment">No rendering pipeline <i>at all</i></li>
-						</ul>
-					</div>
-				</section>
-				<section>
-					<img class="full-page" src="css/corgi-carousel.gif" />
-				</section>
-				<section>
-					<img class="full-page" src="css/thunderbolt.gif" />
-				</section>
-				<section>
-					<a class="text" href="node.html">Node event loop demo</a>
-				</section>
-				<section>
-					<pre><code style="text-align: center; font-size: 4em" class="lisp">setImmediate(callback)</code></pre>
-				</section>
-				<section>
-					<div style="display: flex; align-items: center; font-size: 2em">
-						<pre><code>setTimeout(callback, 0)</code></pre>
-						<img style="width: 20vmin" src="css/hedgehog.png" />
-					</div>
-					<div style="display: flex; align-items: center; font-size: 2em">
-						<img style="width: 20vmin" src="css/sonic.png" />
-						<pre><code>setImmediate(callback)</code></pre>
-					</div>
-					<a class="demo-link" href="node.html">Demo</a>
-				</section>
-				<section>
-					<pre><code style="text-align: center; font-size: 4em" class="lisp">process.nextTick(callback)</code></pre>
-					<a class="demo-link" href="node.html">Demo</a>
-				</section>
-				<section>
-					<div style="display: flex">
-						<pre><code style="font-size: 3em">setImmediate():</code></pre>
-						<div style="padding: .5em; font-size: 2.2em; align-self: center">do something on the next tick</div>
-					</div>
-					<div style="display: flex;" class="fragment">
-						<pre><code style="font-size: 3em">process.nextTick():</code></pre>
-						<div style="padding: .5em; font-size: 2.2em; align-self: center">do something immediately</div>
-					</div>
-				</section>
-				<section>
-						<pre><code data-noescape class="js" style="font-size: 2.6em">
-while (tasksAreWaiting()) {
- <span class="variable-name">queue</span> = getNextQueue();
+					New Angular (Ivy) - reactive Pipeline - more like Vue?
+					current Angular - batch - run change detection after task completes
 
- while (queue.hasTasks()) {
-  <span class="variable-name">task</span> = <span class="variable-name">queue</span>.pop();
-  execute(<span class="variable-name">task</span>);
-
-  while (<span class="variable-name">nextTickQueue</span>.hasTasks()) 
-   doNextTickTask();
-
-  while (<span class="variable-name">promiseQueue</span>.hasTasks()) 
-   doPromiseTask();
- }
-}
-					</code></pre>
-				</section>
-				<section>
-					<div style="position: absolute; top: 50vh; font-size: 3em;">Web workers</div>
-					<img src="css/redback.png" />
-				</section>
-				<section>
-						<div style="width: 45%; position: fixed; top: 5vh; left: 0; border: 4px solid red; padding: 5px">
-							<div style="display: flex; flex-wrap: wrap; justify-content: space-between; margin: auto;">
-								<div class="area" style="width: 40%; display: flex; flex-direction: column; justify-content: flex-end">
-									<div style="flex-grow: 1">stack</div>
-									<div class="task">setTimeout(cb)</div>
-									<div class="task">main()</div>
-								</div>
-								<div class="area" style="width: 55%;">
-									<div>webapis</div>
-								</div>
-								<div class="area" style="display: flex; width: 100%; margin-top: 1vw; height: 4em;">
-									<div style="margin: auto 0;">task queue</div>
-									<div class="task" style="margin-left: 5px">cb</div>
-								</div>
-							</div>
-						</div>
-						<div class="loading-dots" style="position: fixed; top: 30%; left: 45%; right: 25%;"></div>
-						<div style="width: 25%; position: fixed; right: 0; top: 30%; border: 2px solid white; padding: 5px;">
-							<div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
-								<div class="area" style="width: 40%; display: flex; flex-direction: column; justify-content: flex-end">
-									<div style="flex-grow: 1">stack</div>
-									<div class="task"></div>
-									<div class="task"></div>
-									<div class="task"></div>
-								</div>
-								<div class="area" style="width: 55%;">
-									<div>webapis</div>
-								</div>
-								<div class="area" style="display: flex; width: 100%; margin-top: 1vw; height: 4em;">
-									<div style="margin: auto 0;">task queue</div>
-									<div class="task" style="margin-left: 5px">cb</div>
-								</div>
-							</div>
-						</div>
-						<div class="loading-dots" 
-								style="position: fixed; top: 7em; left: 40%; transform: rotate(.25turn); transform-origin: left;">
-						</div>
-						<div style="width: 25%; position: fixed; left: 25%; bottom: 5vh; border: 2px solid white; padding: 5px;">
-							<div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
-								<div class="area" style="width: 40%; display: flex; flex-direction: column; justify-content: flex-end">
-									<div style="flex-grow: 1">stack</div>
-									<div class="task"></div>
-									<div class="task"></div>
-									<div class="task"></div>
-								</div>
-								<div class="area" style="width: 55%;">
-									<div>webapis</div>
-								</div>
-								<div class="area" style="display: flex; width: 100%; margin-top: 1vw; height: 4em;">
-									<div style="margin: auto 0;">task queue</div>
-									<div class="task" style="margin-left: 5px">cb</div>
-								</div>
-							</div>
-						</div>
-					</section>								
-				</section>
-				<section>
-					<ul style="font-size: 4em">
-						<li class="fragment">No script tags</li>
-						<li class="fragment">No user interactions</li>
-						<li class="fragment">No DOM manipulation</li>
-					</ul>
-					<a class="demo-link" href="web-worker.html">Demo</a>
-				</section>
-				<section>
-					<img class="full-page" src="css/thats-it-too-easy.jpg" />
-				</section>
-				<section>
-					<div style="font-size: 3.9em;">Long running tasks will make your web page run like a wonky cat</div>
-				</section>
-				<section>
-					<div style="font-size: 4em">Promises and nextTick tasks can make it run like a dead cat</div>
-				</section>
-				<section>
-					<div style="font-size: 4em">Node is a bit different</div>
-				</section>
-				<section>
-					<div style="font-size: 4em">Web workers do their own thing</div>
-				</section>
-				<section>
-					<div style="font-size: 3.5em;">The event loop is more exciting than you could possibly have imagined</div>
+					ZoneJS - onMicrotaskEmpty event fires automatic change detection
+					
+					In dev mode, a second change detection cycle runs once the zone is stable
+					If this second change detection detects that something has changed in a parent componet, it throws
+					ExpressionChangedAfterItHasBeenChecked error
+					In prod, this second cycle isn't run, the error isn't thrown, but also the change isn't detected
 				</section>
 				<section data-background-image="css/roller-coaster.jpg">
 					<div class="frosted">
@@ -472,7 +306,7 @@ while (tasksAreWaiting()) {
       });
       document.body.addEventListener('keydown', (event) => {
         console.log(event.key);
-      });
+			});
 		</script>
 	</body>
 </html>
