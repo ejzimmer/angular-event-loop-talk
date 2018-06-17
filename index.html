@@ -31,6 +31,84 @@
 			.task2 .hljs-string {
 				color: #444;
 			}
+      .double-headed-arrow {
+        width: 3em;
+        height: 4em;
+        background-color: currentColor;
+        position: relative;
+        border: 1px solid currentColor;
+        margin: 3em;
+      }
+      .double-headed-arrow::before, .double-headed-arrow::after {
+        content: '';
+        display: block;
+        width: 4em;
+        height: 3em;
+        border: 3em solid transparent;
+        border-bottom-color: currentColor;
+        box-sizing: border-box;
+        position: absolute;
+        left: -50%;
+        top: -150%;
+      }
+      .double-headed-arrow::after {
+        transform: rotate(.5turn);
+        top: 100%;
+      }
+
+      .brontosaurus-js {
+        width: 0;
+        overflow: hidden;
+        display: inline-block;
+        transition: width 2s steps(14);
+      }
+      .brontosaurus .brontosaurus-js {
+        width: 14ch;
+      }
+
+      .brontosaurus-html {
+        height: 0;
+        overflow: hidden;
+        transition: height 2s 3s;
+      }
+      .brontosaurus .brontosaurus-html {
+        height: 1em;
+      }
+
+      .task {
+        width: 60vmin;
+        height: 80vmin;
+        background-color: white;
+        border: 2vmin solid black;
+        display: flex;
+        color: black;
+        margin: auto;
+        padding: 0;
+      }
+      .task::before {
+        margin: auto;
+        content: '{}';
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: bold;
+        overflow: hidden;
+        font-size: 30vmin;
+      }
+      .zone-code {
+        width: 58vmin;
+        height: 10vmin;
+        background-color: #faa;
+        border: 1vmin dashed black;
+        margin: auto;
+        position: absolute;
+        bottom: 4vmin;
+        display: flex;
+      }
+      .zone-code::before {
+        content: 'detectChanges();';
+        margin: auto;
+        font-size: 2em;
+      }
+
 		</style>
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -231,36 +309,204 @@ while (true) {
 					</code></pre>
 				</section>
 				<section>
-					<div style="font-size: 3.3em">What does this have to do with Angular?</div>
+					<div style="font-size: 3.3em; display: flex; align-items: center">
+						<div>What does this have to do with </div>
+						<img style="width: 2em; margin-left: .5em" src="css/angular-icon.svg" />
+						<div>?</div>
+					</div>
         </section>
         <section>
-          <pre><code class="html">
-<my-component>
-  <ul>
-    <li *ngFor="let cat in cats"></li>
-  </ul>
-</my-component>
+          <div id="dinosaurs" style="display: flex; flex-direction: column; align-items: center; position: fixed; top: -10vh">
+          <pre><code class="html" style="font-size: 3em" data-noescape>
+&lt;ul&gt;
+  &lt;li&gt;Tyrannosaurus Rex&lt;/li&gt;
+  &lt;li&gt;Velociraptor&lt;/li&gt;
+  &lt;li&gt;Triceratops&lt;/li&gt;<div class="brontosaurus-html">  &lt;li&gt;Brontosaurus&lt;/li&gt;</div>&lt;/ul&gt;
+          </code></pre>
+          <div class="double-headed-arrow"></div>
+					<pre><code class="js" data-noescape style="font-size: 3em;">
+const dinosaurs = [
+  'Tyrannosaurus Rex', 
+  'Velociraptor', 
+  'Triceratops',
+  <div class="brontosaurus-js">'Brontosaurus'</div>
+  ];
+          </code></pre>
+          </div>
+        </section>
+        <section>
+          <div style="font-size: 10em">?</div>
+        </section>
+        <section>
+          <pre style="font-size: 2em"><code>
+setState(updatedState);
           </code></pre>
         </section>
+        <section>
+<pre style="font-size: 2em"><code>
+  const app = new Vue({
+    name: 'Dr Ellie'
+  });
+</code></pre>
+        </section>
+        <section>
+<pre style="font-size: 2em"><code>
+  Object.defineProperty(
+    app, 
+    'items',
+    { get: () => this._name,
+      set: (value) => {
+        this._name = value;
+        runChangeDetection(); 
+      }
+    }
+  );
+</code></pre>
+        </section>
+        <section>
+          <div class="task">
+            <div class="fragment zone-code"></div>
+          </div>
+        </section>
+        <section>
+          <div style="font-family: 'Courier New'; font-size: 10em">zone.js</div>
+        </section>
+        <section style="font-size: 3em; text-align: left">
+          <p>A Zone is an execution context that persists across async tasks.</p>
+          <p>You can think of it as thread-local storage for JavaScript VMs.</p>
+          <div>reference</div>
+        </section>
+        <section style="font-size: 3em; text-align: left">
+          <p>A Zone is a mechanism for intercepting and keeping track of work.</p>
+          <p class="fragment">
+            In its simplest form a Zone allows one to intercept the scheduling and
+            calling of asynchronous operations, and execute additional code before
+            as well as after the asynchronous code.
+          </p>
+          <div>reference</div>
+        </section>
+        <section style="font-size: 1.5em">
+            <pre><code>window.setTimeout(callback, delay)</code></pre>
+        </section>
+        <section style="font-size: 1.5em">
+<pre><code>
+const nativeTimeout = window.setTimeout;
+window.setTimeout = 
+  function (callback, delay) {
+    nativeTimeout(() => {
+      callback();
+      someOtherCode();
+    }, delay);
+  }
+</code></pre>
+        </section>
+        <section style="font-size: 1.5em">
+  <pre><code>
+const nativeTimeout = window.setTimeout;
+window.setTimeout = 
+  function (callback, delay) {
+    nativeTimeout(() => {
+      callback();
+      runChangeDetection();
+    }, delay);
+  }
+  </code></pre>
+        </section>
+        <section>
+          <ul>
+            <li class="fragment">setTimeout & setInterval</li>
+            <li class="fragment">addEventListener & onClick, etc</li>
+            <li class="fragment">XMLHttpRequest & FileReader</li>
+            <li class="fragment">Promises & requestAnimationFrame</li>
+            <li class="fragment">registerElement/IDB/WebSocket/MutationObserver</li>
+          </ul>
+        </section>
+        <section style="font-size: 4em">
+          So what?
+        </section>
+  
+        <section>What does Ivy do?</section>
+        <section>Is change detection run as part of task or as new task/microtask?</section>
+        <section>ZoneJS</section>
+        <section>Presumably it wraps global functions and uses onMicrotaskEmpty to deal with Promises?</section>
+        <section>ngZone & bootstrapping</section>
+        <section>How does this affect me?</section>
+        <section>
+          <ul>
+            <li class="fragment">Running code outside ngZone</li>
+            <li class="fragment">Dev mode vs Production mode</li>
+            <li class="fragment"vc >Testing</li>
+          </ul>
+        </section>
+        <section>
+          If you don't like automatic change detection firing, you can just not
+          no ngZone, manual change detection
+        </section>
+        <section>
+          One way binding - changes in parents can cause changes in children, but not vice versa
+          In dev mode, Angular always runs the automatic change detection twice
+          If it detects any change on the second run, it will throw ExpressionChangedAfterItHasBeenChecked
+          This might seem like it's being annoying, but it's actually being helpful
+        </section>
+        <section>
+          In production - only one change detection cycle is run
+          If a child component causes a change in a parent, it won't cause an error to be thrown
+          But the change also won't be detected, so things won't work as you expect
+        </section>
 				<section>
-					Main uses of framework = link between DOM & js
-					Need to know _when_ to update the DOM. 
-				</section>
-				<section>
-					different frameworks do this differently - React, you tell it.
-					Vue - getters & setters
-				</section>
-				<section>
-					New Angular (Ivy) - reactive Pipeline - more like Vue?
-					current Angular - batch - run change detection after task completes
-
-					ZoneJS - onMicrotaskEmpty event fires automatic change detection
-					
-					In dev mode, a second change detection cycle runs once the zone is stable
-					If this second change detection detects that something has changed in a parent componet, it throws
-					ExpressionChangedAfterItHasBeenChecked error
-					In prod, this second cycle isn't run, the error isn't thrown, but also the change isn't detected
-				</section>
+          Testing
+          Tests don't run in ngZone
+          Change detection doesn't work
+          This can be a bit of a nuisance (failing test + angry face meme)
+        </section>
+        <section>
+          Actually, it's a good thing, because all your tests run faster
+        </section>
+        <section>
+          But what if you really need change detection - example of test that needs it
+        </section>
+        <section>
+          Angular also provides a testing zone, which works a bit like React and lets you tell it
+          when to run change detection
+        </section>
+        <section>
+          enter fixture.detectChanges()
+        </section>
+        <section>
+          also other things you can use? whenStable()?
+        </section>
+        <section>
+          Also testing and async tasks - in terms of the event loop, your test runs as a single task-source
+          If you have something asynchronous happening inside your component, it's going to run as a later task
+          which potentially could cause your test to fail (or pass when it's not meant to)
+        </section>
+        <section>
+          This is what jasmine's done() function was dealing with - it allowed the test to be broken up into
+          multiple tasks and not finish until all tasks had completed
+        </section>
+        <section>
+          Angular gives you a way to do that too - fakeAsync zone
+        </section>
+        <section>
+          fakeAsync lets you control the flow of time within your tests
+        </section>
+        <section>
+          example of test wrapped in fake async
+        </section>
+        <section>
+          flushMicrotaskQueue. hrm can i do an example of this? how does it even work?
+        </section>
+        <section>
+          tick & flush
+        </section>
+        <section>an understanding of the event loop probably isn't vital, but can definitely help with understanding some of JavaScript's more esoteric behaviour</section>
+        <section>fine tune performance by running things outside the ngZone</section>
+        <section>ensure your data-binding really is only one-way - be thankful for that error, not cross</section>
+        <section>
+          all this is especially helpful for testing, where you need to manually trigger a lot of the things 
+          that normally happen automatically
+          good opportunity to get a better understanding of what's going on in your production app
+        </section>
 				<section data-background-image="css/roller-coaster.jpg">
 					<div class="frosted">
 						<div style="margin-bottom: .5em">@erinjzimmer</div>
@@ -304,9 +550,11 @@ while (true) {
       task.addEventListener('click', function () {
         this.classList.add('highlighted');
       });
-      document.body.addEventListener('keydown', (event) => {
-        console.log(event.key);
-			});
+
+      const dinosaurs = document.getElementById('dinosaurs');
+      dinosaurs.addEventListener('click', function () {
+        this.classList.add('brontosaurus');
+      })
 		</script>
 	</body>
 </html>
