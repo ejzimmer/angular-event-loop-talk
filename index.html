@@ -142,7 +142,7 @@
       }
 
       .zone div {
-        font-family: 'sans-serif';
+        font-family: sans-serif;
         font-size: 8em;
         transform: rotate(-.125turn);
         margin: auto;
@@ -406,7 +406,7 @@ setState(updatedState);
         </section>
         <section>
           <div class="zone">
-            ZONE.JS
+            <div>ZONE.JS</div>
           </div>
         </section>
         <section style="font-size: 3em; text-align: left">
@@ -473,7 +473,7 @@ platformBrowserDynamic().bootstrapModule(AppModule);
           </code></pre>
           <div class="down-arrow"></div>
           <pre><code>
-ngZone.run(()
+ngZone.run()
           </code></pre>
           </div>
         </section>
@@ -537,47 +537,60 @@ it('should add a new list item', (done) => {
             <div>fakeAsync</div>
           </div>
         </section>
-  
+
         <section>
-          also other things you can use? whenStable()?
+          <pre><code>
+it('should flush microtasks before returning', () => {
+  let thenRan = false;
+
+  fakeAsync(() => { resolvedPromise.then(_ => { thenRan = true; }); })();
+
+  expect(thenRan).toEqual(true);
+});
+
+          </code></pre>
+        </section>
+
+        <section>
+          what does this mean, how does it help?
+        </section>
+
+        <section>
+          fine-grained control over the event loop
+          flushMicrotasks()
+          flush()
+          tick()
+        </section>
+
+        <section>
+          <div style="font-size: 4em">Performance</div>
+        </section>
+
+        <section>
+          every time you make a change to your component, automatic change detection runs
+          there are a few ways to improve this, but one way is just to turn the automatic change detection off
+          run outside the ngZone
+        </section>
+
+        <section>
+          a deep understanding of the event loop and zones probably isn't vital,
+          but it can definitely help if you run into trouble with some of JavaScripts more esoteric behaviour
         </section>
         <section>
-          Also testing and async tasks - in terms of the event loop, your test runs as a single task-source
-          If you have something asynchronous happening inside your component, it's going to run as a later task
-          which potentially could cause your test to fail (or pass when it's not meant to)
+          it's definitely helpful when you're trying to write tests
         </section>
         <section>
-          This is what jasmine's done() function was dealing with - it allowed the test to be broken up into
-          multiple tasks and not finish until all tasks had completed
+          and it could be helpful if you're looking to improve the performance of your application
         </section>
-        <section>
-          Angular gives you a way to do that too - fakeAsync zone
-        </section>
-        <section>
-          fakeAsync lets you control the flow of time within your tests
-        </section>
-        <section>
-          example of test wrapped in fake async
-        </section>
-        <section>
-          flushMicrotaskQueue. hrm can i do an example of this? how does it even work?
-        </section>
-        <section>
-          tick & flush
-        </section>
-        <section>an understanding of the event loop probably isn't vital, but can definitely help with understanding some of JavaScript's more esoteric behaviour</section>
-        <section>fine tune performance by running things outside the ngZone</section>
-        <section>ensure your data-binding really is only one-way - be thankful for that error, not cross</section>
-        <section>
-          all this is especially helpful for testing, where you need to manually trigger a lot of the things 
-          that normally happen automatically
-          good opportunity to get a better understanding of what's going on in your production app
-        </section>
-				<section data-background-image="css/roller-coaster.jpg">
-					<div class="frosted">
-						<div style="margin-bottom: .5em">@erinjzimmer</div>
-						<a href="/package.json" style="color: currentColor; font-size: .9em">https://ejzimmer.github.io/event-loop-talk</a>
-					</div>
+
+				<section data-background-image="css/Sues_skeleton.jpg">
+          <div class="twitter" style="background-color: rgba(14, 14, 13, 0.6); font-size: 4em; top: 50%; bottom: auto; padding: .25em; border-radius: 5px; left: 50%; right: auto">
+            Thanks!
+          </div>
+          <div class="twitter" style="background-color: rgba(14, 14, 13, 0.6); padding: .5em;">@erinjzimmer</div>
+          <div class="notes">
+            sometimes peeking under the covers of something big and complicated can give you a really good idea of how it works
+          </div>
 				</section>
 			</div>
 		</div>

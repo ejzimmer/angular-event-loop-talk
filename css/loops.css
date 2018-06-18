@@ -210,7 +210,7 @@ svg.title {
   }
 }
 
-.frosted::before, .glastonbury::before, .microtasks::before, .gallop::before {
+.frosted::before, .glastonbury::before, .microtasks::before, .gallop::before, .frosted-dinosaur::before {
   content: '';
   position: absolute;
   top: 0; bottom: 0; left: 0; right: 0;
@@ -236,6 +236,10 @@ svg.title {
   background: url('gallop.jpg');
   margin: -10px;
 }
+.frosted-dinosaur {
+  background: url('Sues_skeleton.jpg');
+  margin: -20px;
+}
 
 .frosted, .glastonbury {
   font-weight: bold;
@@ -258,6 +262,11 @@ svg.title {
   color: var(--background-start);
   font-size: 3em;
   box-shadow: 4px 4px 16px 4px rgba(32, 79, 104, .5); 
+}
+
+.forsted-dinosaur {
+  font-size: 3em;
+  box-shadow: 4px 4px 16px 4px #ddd;
 }
 
 .gallop {
