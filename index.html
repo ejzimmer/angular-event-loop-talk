@@ -103,20 +103,49 @@
         overflow: hidden;
         font-size: 30vmin;
       }
-      .zone-code {
+      .zone-code, .pre-zone-code {
         width: 58vmin;
         height: 10vmin;
-        background-color: #faa;
         border: 1vmin dashed black;
         margin: auto;
         position: absolute;
-        bottom: 4vmin;
         display: flex;
+      }
+      .zone-code {
+        background-color: #faa;
+        bottom: 4vmin;
+      }
+      .pre-zone-code {
+        top: 4vmin;
+        background-color: #afa;
+      }
+      .zone-code::before, .pre-zone-code::before {
+        margin: auto;
+        font-size: 2em;
       }
       .zone-code::before {
         content: 'detectChanges();';
+      }
+      .pre-zone-code::before {
+        content: 'startTimer();';
+      }
+
+      .zone {
+        border: 8px solid black;
+        color: black;
+        background-color: #ffbf11;
+        width: 80vmin;
+        height: 80vmin;
         margin: auto;
-        font-size: 2em;
+        display: flex;
+        transform: rotate(.125turn);
+      }
+
+      .zone div {
+        font-family: 'sans-serif';
+        font-size: 8em;
+        transform: rotate(-.125turn);
+        margin: auto;
       }
 
 		</style>
@@ -327,15 +356,12 @@ while (true) {
         </section>
         <section>
           <div id="dinosaurs" style="display: flex; flex-direction: column; align-items: center; position: fixed; top: -10vh">
-          <pre><code class="html" style="font-size: 3em" data-noescape>
-&lt;ul&gt;
+          <pre><code class="html" style="font-size: 3em" data-noescape>&lt;ul&gt;
   &lt;li&gt;Tyrannosaurus Rex&lt;/li&gt;
   &lt;li&gt;Velociraptor&lt;/li&gt;
-  &lt;li&gt;Triceratops&lt;/li&gt;<div class="brontosaurus-html">  &lt;li&gt;Brontosaurus&lt;/li&gt;</div>&lt;/ul&gt;
-          </code></pre>
+  &lt;li&gt;Triceratops&lt;/li&gt;<div class="brontosaurus-html">  &lt;li&gt;Brontosaurus&lt;/li&gt;</div>&lt;/ul&gt;</code></pre>
           <div class="double-headed-arrow"></div>
-					<pre><code class="js" data-noescape style="font-size: 3em;">
-const dinosaurs = [
+					<pre><code class="js" data-noescape style="font-size: 3em;">const dinosaurs = [
   'Tyrannosaurus Rex', 
   'Velociraptor', 
   'Triceratops',
@@ -379,16 +405,8 @@ setState(updatedState);
           </div>
         </section>
         <section>
-          <div 
-          style="border: 8px solid black; 
-                color: black; 
-                background-color: #ffbf11; 
-                width: 80vmin; 
-                height: 80vmin;
-                margin: auto;
-                display: flex;
-                transform: rotate(.125turn)">
-            <div style="font-family: 'sans-serif'; font-size: 8em; transform: rotate(-.125turn); margin: auto">ZONE.JS</div>
+          <div class="zone">
+            ZONE.JS
           </div>
         </section>
         <section style="font-size: 3em; text-align: left">
@@ -407,43 +425,45 @@ setState(updatedState);
         </section>
         <section>
             <div class="task">
-              <div class="fragment zone-code"></div>
+              <div class="pre-zone-code"></div>
+              <div class="zone-code"></div>
             </div>    
         </section>
         <section style="font-size: 1.5em">
             <pre><code>window.setTimeout(callback, delay)</code></pre>
         </section>
         <section style="font-size: 1.5em">
-<pre><code>
+<pre><code data-noescape>
 const nativeTimeout = window.setTimeout;
 window.setTimeout = 
   function (callback, delay) {
     nativeTimeout(() => {
+      <span style="color: #afa">preTaskCallback();</span>
       callback();
-      someOtherCode();
+      <span style="color: #faa">postTaskCallback();</span>
     }, delay);
   }
 </code></pre>
         </section>
         <section style="font-size: 1.5em">
-  <pre><code>
+  <pre><code data-noescape>
 const nativeTimeout = window.setTimeout;
 window.setTimeout = 
   function (callback, delay) {
     nativeTimeout(() => {
       callback();
-      runChangeDetection();
+      <span style="color: #faa">runChangeDetection();</span>
     }, delay);
   }
   </code></pre>
         </section>
         <section>
           <ul>
-            <li class="fragment">setTimeout & setInterval</li>
-            <li class="fragment">addEventListener & onClick, etc</li>
-            <li class="fragment">XMLHttpRequest & FileReader</li>
-            <li class="fragment">Promises & requestAnimationFrame</li>
-            <li class="fragment">registerElement/IDB/WebSocket/MutationObserver</li>
+            <li>setTimeout & setInterval</li>
+            <li>addEventListener & onClick, etc</li>
+            <li>XMLHttpRequest & FileReader</li>
+            <li>Promises & requestAnimationFrame</li>
+            <li>registerElement/IDB/WebSocket/MutationObserver</li>
           </ul>
         </section>
         <section>
@@ -473,7 +493,7 @@ ngZone.run(()
           </div>
         </section>
         <section>
-          <img src="sonic-running.png" />
+          <img src="css/dromiceiomimus.png" />
           <div class="notes">
             On the one hand, this is a good thing, because it means your tests run
             faster.
@@ -486,7 +506,8 @@ it('should add a new list item', () => {
   expect(listItems[3]).toBe('Brontosaurus');
 });
           </code></pre>
-          <img src="angry-face-meme.png" />
+          <code style="color: #f99; font-size: 2em; text-align: left; text-shadow: 1px 1px #c44">Expected undefined to be 'Brontosaurus'</code>
+          <img src="css/Rage.jpg" class="fragment" style="width: 40vw; position: fixed; right: 0; bottom: 0;" />
           <div class="notes">
             On the other hand, this can be a bit of a nuisance, because you can't test
             any functionality that changes the DOM
@@ -500,20 +521,23 @@ it('should add a new list item', () => {
           </div>
         </section>
         <section>
-          <pre><code>
-            it('should add a new list item', () => {
-              component.dinosaurs.push('Brontosaurus');
-              fixture.detectChanges().then(() => {
-                expect(listItems[3]).toBe('Brontosaurus');
-              });
-            });
+          <pre><code data-noescape>
+it('should add a new list item', (done) => {
+  component.dinosaurs.push('Brontosaurus');
+  <span style="color: #ef8dd1">fixture.detectChanges()</span>.then(() => {
+    expect(listItemElements[3]).toBe('Brontosaurus');
+    done();
+  });
+});
           </code></pre>
-          <img src="happy-dinosaur.png" />
+          <img src="css/homer-computer-woohoo.jpg" />
+        </section>
+        <section>
+          <div class="zone">
+            <div>fakeAsync</div>
+          </div>
         </section>
   
-        <section>
-          enter fixture.detectChanges()
-        </section>
         <section>
           also other things you can use? whenStable()?
         </section>
@@ -596,11 +620,6 @@ it('should add a new list item', () => {
       const dinosaurs = document.getElementById('dinosaurs');
       dinosaurs.addEventListener('click', function () {
         this.classList.add('brontosaurus');
-      });
-
-      const oneWay = document.getElementById('one-way-flow');
-      oneWay.addEventListener('click', function () {
-        this.classList.add('reverse');
       });
 		</script>
 	</body>
