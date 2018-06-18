@@ -31,7 +31,7 @@
 			.task2 .hljs-string {
 				color: #444;
 			}
-      .double-headed-arrow {
+      .double-headed-arrow, .down-arrow {
         width: 3em;
         height: 4em;
         background-color: currentColor;
@@ -39,7 +39,7 @@
         border: 1px solid currentColor;
         margin: 3em;
       }
-      .double-headed-arrow::before, .double-headed-arrow::after {
+      .double-headed-arrow::before, .double-headed-arrow::after, .down-arrow::after {
         content: '';
         display: block;
         width: 4em;
@@ -51,9 +51,19 @@
         left: -50%;
         top: -150%;
       }
-      .double-headed-arrow::after {
+      .double-headed-arrow::after, .down-arrow::after {
         transform: rotate(.5turn);
         top: 100%;
+      }
+      .down-arrow {
+        margin-top: 0;
+        transform: scale(.5);
+        transition: transform 1s, margin 1s;
+      }
+
+      .reverse .down-arrow {
+        transform: scale(.5) rotate(.5turn);
+        margin-top: 2em;
       }
 
       .brontosaurus-js {
@@ -345,7 +355,7 @@ setState(updatedState);
         <section>
 <pre style="font-size: 2em"><code>
   const app = new Vue({
-    name: 'Dr Ellie'
+    name: 'Dr Ellie Sattler'
   });
 </code></pre>
         </section>
@@ -369,12 +379,22 @@ setState(updatedState);
           </div>
         </section>
         <section>
-          <div style="font-family: 'Courier New'; font-size: 10em">zone.js</div>
+          <div 
+          style="border: 8px solid black; 
+                color: black; 
+                background-color: #ffbf11; 
+                width: 80vmin; 
+                height: 80vmin;
+                margin: auto;
+                display: flex;
+                transform: rotate(.125turn)">
+            <div style="font-family: 'sans-serif'; font-size: 8em; transform: rotate(-.125turn); margin: auto">ZONE.JS</div>
+          </div>
         </section>
         <section style="font-size: 3em; text-align: left">
           <p>A Zone is an execution context that persists across async tasks.</p>
           <p>You can think of it as thread-local storage for JavaScript VMs.</p>
-          <div>reference</div>
+          <div class="twitter" style="font-size: .5em">https://github.com/angular/zone.js/README.md</div>
         </section>
         <section style="font-size: 3em; text-align: left">
           <p>A Zone is a mechanism for intercepting and keeping track of work.</p>
@@ -383,7 +403,12 @@ setState(updatedState);
             calling of asynchronous operations, and execute additional code before
             as well as after the asynchronous code.
           </p>
-          <div>reference</div>
+          <div class="twitter" style="font-size: .5em">zone.js/lib/zone.ts</div>
+        </section>
+        <section>
+            <div class="task">
+              <div class="fragment zone-code"></div>
+            </div>    
         </section>
         <section style="font-size: 1.5em">
             <pre><code>window.setTimeout(callback, delay)</code></pre>
@@ -421,54 +446,71 @@ window.setTimeout =
             <li class="fragment">registerElement/IDB/WebSocket/MutationObserver</li>
           </ul>
         </section>
+        <section>
+          <div style="display: flex; flex-direction: column; align-items: center">
+          <pre><code>
+platformBrowserDynamic().bootstrapModule(AppModule);
+          </code></pre>
+          <div class="down-arrow"></div>
+          <pre><code>
+ngZone.run(()
+          </code></pre>
+          </div>
+        </section>
         <section style="font-size: 4em">
-          So what?
+          So what? ¯\_(ツ)_/¯
+          <div class="notes">
+            How does this affect me as an Angular developer?
+            Short answer - it doesn't. You can write perfectly good Angular
+            code without knowing any of this stuff. There is, however, one
+            little trap that you should probably be aware of
+          </div>
+        </section>
+        <section>
+          <div style="font-size: 4em">Testing</div>
+          <div class="notes">
+            Tests don't run in the ngZone, so you don't get any automatic change detection
+          </div>
+        </section>
+        <section>
+          <img src="sonic-running.png" />
+          <div class="notes">
+            On the one hand, this is a good thing, because it means your tests run
+            faster.
+          </div>
+        </section>
+        <section>
+          <pre><code>
+it('should add a new list item', () => {
+  component.dinosaurs.push('Brontosaurus');
+  expect(listItems[3]).toBe('Brontosaurus');
+});
+          </code></pre>
+          <img src="angry-face-meme.png" />
+          <div class="notes">
+            On the other hand, this can be a bit of a nuisance, because you can't test
+            any functionality that changes the DOM
+          </div>
+        </section>
+        <section>
+          <pre><code style="font-size: 3em">fixture.detectChanges()</code></pre>
+          <div class="notes">
+            Luckily, the Angular team though of this and provided you with a way to 
+            kick off the change detection manually
+          </div>
+        </section>
+        <section>
+          <pre><code>
+            it('should add a new list item', () => {
+              component.dinosaurs.push('Brontosaurus');
+              fixture.detectChanges().then(() => {
+                expect(listItems[3]).toBe('Brontosaurus');
+              });
+            });
+          </code></pre>
+          <img src="happy-dinosaur.png" />
         </section>
   
-        <section>What does Ivy do?</section>
-        <section>Is change detection run as part of task or as new task/microtask?</section>
-        <section>ZoneJS</section>
-        <section>Presumably it wraps global functions and uses onMicrotaskEmpty to deal with Promises?</section>
-        <section>ngZone & bootstrapping</section>
-        <section>How does this affect me?</section>
-        <section>
-          <ul>
-            <li class="fragment">Running code outside ngZone</li>
-            <li class="fragment">Dev mode vs Production mode</li>
-            <li class="fragment"vc >Testing</li>
-          </ul>
-        </section>
-        <section>
-          If you don't like automatic change detection firing, you can just not
-          no ngZone, manual change detection
-        </section>
-        <section>
-          One way binding - changes in parents can cause changes in children, but not vice versa
-          In dev mode, Angular always runs the automatic change detection twice
-          If it detects any change on the second run, it will throw ExpressionChangedAfterItHasBeenChecked
-          This might seem like it's being annoying, but it's actually being helpful
-        </section>
-        <section>
-          In production - only one change detection cycle is run
-          If a child component causes a change in a parent, it won't cause an error to be thrown
-          But the change also won't be detected, so things won't work as you expect
-        </section>
-				<section>
-          Testing
-          Tests don't run in ngZone
-          Change detection doesn't work
-          This can be a bit of a nuisance (failing test + angry face meme)
-        </section>
-        <section>
-          Actually, it's a good thing, because all your tests run faster
-        </section>
-        <section>
-          But what if you really need change detection - example of test that needs it
-        </section>
-        <section>
-          Angular also provides a testing zone, which works a bit like React and lets you tell it
-          when to run change detection
-        </section>
         <section>
           enter fixture.detectChanges()
         </section>
@@ -554,7 +596,12 @@ window.setTimeout =
       const dinosaurs = document.getElementById('dinosaurs');
       dinosaurs.addEventListener('click', function () {
         this.classList.add('brontosaurus');
-      })
+      });
+
+      const oneWay = document.getElementById('one-way-flow');
+      oneWay.addEventListener('click', function () {
+        this.classList.add('reverse');
+      });
 		</script>
 	</body>
 </html>
