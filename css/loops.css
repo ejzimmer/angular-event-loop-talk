@@ -264,7 +264,7 @@ svg.title {
   box-shadow: 4px 4px 16px 4px rgba(32, 79, 104, .5); 
 }
 
-.forsted-dinosaur {
+.frosted-dinosaur {
   font-size: 3em;
   box-shadow: 4px 4px 16px 4px #ddd;
 }
@@ -282,4 +282,18 @@ svg.title {
   color: #a6e22e;
 }
 
+button {
+  margin: 20vmin;
+  padding: 1em;
+  font-size: 2em;
+  background-color: #ff6a00;
+  border: 3px solid white;
+  color: white;
+  border-radius: 5px;
+  box-shadow: 4px 4px 8px #666;
+  transition: box-shadow .4s;
+}
 
+button:active {
+  box-shadow: none;
+}

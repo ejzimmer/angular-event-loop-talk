@@ -148,6 +148,14 @@
         margin: auto;
       }
 
+      .superfluous {
+        color: #ef8dd1;
+        transition: opacity 2s;
+      }
+      .gone .superfluous {
+        opacity: 0;
+      }
+
 		</style>
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -542,17 +550,36 @@ it('should add a new list item', (done) => {
           <pre><code>
 it('should flush microtasks before returning', () => {
   let thenRan = false;
-
-  fakeAsync(() => { resolvedPromise.then(_ => { thenRan = true; }); })();
-
+  fakeAsync(() => { 
+    resolvedPromise.then(_ => { thenRan = true; }); 
+  })();
   expect(thenRan).toEqual(true);
 });
-
           </code></pre>
         </section>
 
         <section>
-          what does this mean, how does it help?
+          <pre id="promises" style="font-size: 2em; text-align: left">
+it('should add a new list item', (<span class="superfluous">done</span>) => {
+  component.dinosaurs.push('Brontosaurus');
+  fixture.detectChanges().then(() => {
+    expect(listItemElements[3]).toBe('Brontosaurus');
+    <span class="superfluous">done();</span>
+  });
+});
+          </pre>
+          <div class="notes">The fakeAsync zone also provides you with functions
+            that give you fine-grained control over how tasks are executed within the zone
+          </div>
+        </section>
+        <section>
+          <task-queue id="microtask-queue" style="width: 100px; transform: scale(2)" type="microtask">
+          </task-queue>
+          <button id="flush-microtasks">flushMicrotasks()</button>
+          <div class="notes">
+            Can't wait til the end of your task for all your promise callbacks to be run?
+            Use flushMicrotasks to run them any time you like!j
+          </div>
         </section>
 
         <section>
@@ -579,6 +606,7 @@ it('should flush microtasks before returning', () => {
         <section>
           it's definitely helpful when you're trying to write tests
         </section>
+
         <section>
           and it could be helpful if you're looking to improve the performance of your application
         </section>
@@ -616,13 +644,7 @@ it('should flush microtasks before returning', () => {
 			});
 		</script>
 
-		<link rel="import" href="components/event-loop.html">
-		<link rel="import" href="components/browser.html">
-		<link rel="import" href="components/queues.html">
-		<link rel="import" href="components/rendering-pipeline.html">
-		<link rel="import" href="components/queue-selector.html">
 		<link rel="import" href="components/queue.html">
-    <link rel="import" href="components/task-source.html">
     
     <script>
       const task = document.querySelector('.tasks');
@@ -634,6 +656,29 @@ it('should flush microtasks before returning', () => {
       dinosaurs.addEventListener('click', function () {
         this.classList.add('brontosaurus');
       });
+
+      const promises = document.getElementById('promises');
+      promises.addEventListener('click', function () {
+        this.classList.add('gone');
+      })
+
+      const microtaskQueue = document.getElementById('microtask-queue');
+      const numberOfTasks = 3;
+      for (let i = 0; i < numberOfTasks; i++) {
+        microtaskQueue.addTask('microtask');
+      }
+      
+      const flushMicrotasksButton = document.getElementById('flush-microtasks');
+      flushMicrotasksButton.addEventListener('click', () => {
+          runTasks(microtaskQueue);
+      });
+
+      async function runTasks(queue) {
+        while (queue.getTask(0)) {
+          await queue.runTask();
+        }
+      }
+
 		</script>
 	</body>
 </html>
