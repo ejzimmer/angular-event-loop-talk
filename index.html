@@ -156,6 +156,14 @@
         opacity: 0;
       }
 
+      #time-passed.done {
+        text-decoration: underline;
+      }
+
+      #timeout-list.ticked li:nth-child(-n + 3), #flush-tasks-list li.done {
+        color: #666;
+      }
+
 		</style>
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -583,10 +591,39 @@ it('should add a new list item', (<span class="superfluous">done</span>) => {
         </section>
 
         <section>
-          fine-grained control over the event loop
-          flushMicrotasks()
-          flush()
-          tick()
+          <ul id="flush-tasks-list" style="list-style: none">
+            <li><code>setTimeout(callback, 1000)</code></li>
+            <li><code>setTimeout(callback, 2000)</code></li>
+            <li><code>setTimeout(callback, 3000)</code></li>
+            <li><code>setTimeout(callback, 4000)</code></li>
+            <li><code>setTimeout(callback, 5000)</code></li>
+          </ul>
+          <button id="flush-tasks">flush()</button>
+          <div style="font-size: 4em" id="time-passed">0</div>
+          <div class="notes">
+            Or maybe it's not just microtasks that you're waiting on.
+            Maybe you've got some timers or event callbacks that you're waiting on.
+            
+            Turns out there's a function for that too!
+          </div>
+        </section>
+
+        <section>
+          <ul id="timeout-list" style="list-style: none">
+            <li><code>setTimeout(callback, 1000)</code></li>
+            <li><code>setTimeout(callback, 2000)</code></li>
+            <li><code>setTimeout(callback, 3000)</code></li>
+            <li><code>setTimeout(callback, 4000)</code></li>
+            <li><code>setTimeout(callback, 5000)</code></li>
+          </ul>
+          <button id="tick">tick(3000)</button>
+
+          <script>
+            const tick = document.getElementById('tick');
+            tick.addEventListener('click', () => {
+              document.getElementById('timeout-list').classList.add('ticked');
+            });
+          </script>
         </section>
 
         <section>
@@ -594,31 +631,31 @@ it('should add a new list item', (<span class="superfluous">done</span>) => {
         </section>
 
         <section>
-          every time you make a change to your component, automatic change detection runs
-          there are a few ways to improve this, but one way is just to turn the automatic change detection off
-          run outside the ngZone
+          <pre><code>
+this.zone.runOutsideAngular(() => {
+  doSneakyStuff();
+});
+          </code></pre>
+          <pre class="fragment"><code>
+this.zone.run(() => {
+  doNonSneakyStuff();
+});         
+          </code></pre>
         </section>
 
-        <section>
-          a deep understanding of the event loop and zones probably isn't vital,
-          but it can definitely help if you run into trouble with some of JavaScripts more esoteric behaviour
-        </section>
-        <section>
-          it's definitely helpful when you're trying to write tests
-        </section>
-
-        <section>
-          and it could be helpful if you're looking to improve the performance of your application
+        <section data-background-image="css/Joda_paleontologist.jpg">
+          <div class="notes">
+            a deep understanding of the event loop and zones probably isn't vital,
+            but sometimes poking around under the covers can really help
+            you see the bigger picture
+          <div>
         </section>
 
-				<section data-background-image="css/Sues_skeleton.jpg">
+        <section data-background-image="css/Sues_skeleton.jpg">
           <div class="twitter" style="background-color: rgba(14, 14, 13, 0.6); font-size: 4em; top: 50%; bottom: auto; padding: .25em; border-radius: 5px; left: 50%; right: auto">
             Thanks!
           </div>
           <div class="twitter" style="background-color: rgba(14, 14, 13, 0.6); padding: .5em;">@erinjzimmer</div>
-          <div class="notes">
-            sometimes peeking under the covers of something big and complicated can give you a really good idea of how it works
-          </div>
 				</section>
 			</div>
 		</div>
@@ -670,7 +707,30 @@ it('should add a new list item', (<span class="superfluous">done</span>) => {
       
       const flushMicrotasksButton = document.getElementById('flush-microtasks');
       flushMicrotasksButton.addEventListener('click', () => {
-          runTasks(microtaskQueue);
+        runTasks(microtaskQueue);
+      });
+
+      const flushButton = document.getElementById('flush-tasks');
+      const timePassedElement = document.getElementById('time-passed');
+      let timePassed = 0;
+      flushButton.addEventListener('click', () => {
+        let timePassed = 0;
+        const startTime = new Date();
+        const interval = setInterval(() => {
+          let timeElapsed = new Date() - startTime;
+          if (timeElapsed >= 5000) {
+            clearInterval(interval);
+            timeElapsed = 5000;
+          }
+          timePassedElement.innerHTML = timeElapsed;
+        })
+
+        document.querySelectorAll('#flush-tasks-list li')
+          .forEach((li, index) => {
+            setTimeout(() => {
+              li.classList.add('done');
+            }, index * 1000);
+          })
       });
 
       async function runTasks(queue) {
