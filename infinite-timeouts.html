@@ -36,7 +36,8 @@
       let numberOfTasks = 0;
 
       function start() {
-        document.getElementById('timeouts').innerHTML = numberOfTasks++;
+        document.getElementById('timeouts')
+                      .innerHTML = numberOfTasks++;
         setTimeout(start);
       }
     </script>

@@ -150,7 +150,7 @@
 
       .superfluous {
         color: #ef8dd1;
-        transition: opacity 2s;
+        transition: opacity 2s 1.5s;
       }
       .gone .superfluous {
         opacity: 0;
@@ -163,6 +163,18 @@
       #timeout-list.ticked li:nth-child(-n + 3), #flush-tasks-list li.done {
         color: #666;
       }
+
+      .fake-async {
+        width: 0;
+        overflow: hidden;
+        display: inline-block;
+        transition: width 1.5s steps(9);
+        color: #afa;
+      }
+      .fake-async.showing {
+        width: 9ch;
+      }
+
 
 		</style>
 		<!-- Theme used for syntax highlighting of code -->
@@ -196,20 +208,16 @@ while (true) {
 				<section>
 					<pre class="tasks"><code data-noescape>
 &lt;script&gt;
- <div class="task1">
-const foo = bar;
-foo.doSomething();
+ <div class="task1">const dinosaur = new Brontosaurus();
+dinosaur.hatch();
 
-document.body.addEventListener('keydown', (event) => {</div>
-<div class="task2"> if (event.key === 'PageDown') {
-   location.href = "/#/36";
- }</div>
+document.body.addEventListener('click', (event) => {</div>
+<div class="task2">
+   dinosaur.rawr();
+ </div>
  <div class="task1">});</div>
 &lt;/script&gt;
 					</code></pre>
-				</section>
-				<section>
-					<div class="text">What does <code style="font-size: 1.2em">execute(<span class="variable-name">task</span>)</code> do?</div>
 				</section>
 				<section data-background-image="css/glastonbury.jpg">
 					<div class="glastonbury">
@@ -240,6 +248,11 @@ function veryLongTask() {
   setTimeout(restOfTheTask);
 }
           </code></pre>
+        </section>
+        <section data-background-image="css/web-worker.jpg">
+          <div class="web-workers">
+            <div style="font-size: 4em">Web workers...</div>
+          </div>
         </section>
 				<section>
 						<pre><code data-noescape class="js" style="font-size: 3.7em">
@@ -546,7 +559,7 @@ it('should add a new list item', (done) => {
   });
 });
           </code></pre>
-          <img src="css/homer-computer-woohoo.jpg" />
+          <img class="fragment" src="css/homer-computer-woohoo.jpg" />
         </section>
         <section>
           <div class="zone">
@@ -568,26 +581,56 @@ it('should flush microtasks before returning', () => {
 
         <section>
           <pre id="promises" style="font-size: 2em; text-align: left">
-it('should add a new list item', (<span class="superfluous">done</span>) => {
+it('should add a new list item', <span class="fake-async">fakeAsync</span>((<span class="superfluous">done</span>) => {
   component.dinosaurs.push('Brontosaurus');
   fixture.detectChanges().then(() => {
     expect(listItemElements[3]).toBe('Brontosaurus');
     <span class="superfluous">done();</span>
   });
-});
+}));
           </pre>
           <div class="notes">The fakeAsync zone also provides you with functions
             that give you fine-grained control over how tasks are executed within the zone
           </div>
         </section>
         <section>
-          <task-queue id="microtask-queue" style="width: 100px; transform: scale(2)" type="microtask">
+          <task-queue id="microtask-queue" style="width: 100px; transform: scale(2); margin-top: 10vh;" type="microtask">
           </task-queue>
-          <button id="flush-microtasks">flushMicrotasks()</button>
+          <button style="margin: 10vh;" id="flush-microtasks">flushMicrotasks()</button>
+          <pre><code data-noescape>
+it('should do something after a promise resolves', fakeAsync(() => {
+  component.submit();
+  <span style="color: #faa">flushMicrotasks();</span>
+  expect(dinosaurs).toContain('Torontosaurus');
+}));            
+          </code></pre>
           <div class="notes">
             Can't wait til the end of your task for all your promise callbacks to be run?
             Use flushMicrotasks to run them any time you like!j
           </div>
+        </section>
+
+        <section>
+          <pre><code class="js" data-noescape>
+          let count = 0;
+
+          function countUp() {
+            setTimeout(() => count++, 1000);
+            setTimeout(() => count++, 2000);
+            setTimeout(() => count++, 3000);
+            setTimeout(() => count++, 4000);
+            setTimeout(() => count++, 5000);
+          }
+</code></pre>
+<pre><code class="js fragment" data-noescape>
+          it('should count to 5 in five seconds', fakeAsync(() => {
+            countUp();
+            const timeElapsed = <span style="color: #faa">flush();</span>
+
+            expect(count).toBe(5);
+            expect(timeElapsed).toBe(5000);
+          }));
+          </code></pre>
         </section>
 
         <section>
@@ -598,8 +641,11 @@ it('should add a new list item', (<span class="superfluous">done</span>) => {
             <li><code>setTimeout(callback, 4000)</code></li>
             <li><code>setTimeout(callback, 5000)</code></li>
           </ul>
-          <button id="flush-tasks">flush()</button>
-          <div style="font-size: 4em" id="time-passed">0</div>
+          <div style="display: flex;">
+            <button id="flush-tasks">flush()</button>
+            <div style="font-size: 4em; margin: auto" id="time-passed">0</div>
+          </div>
+
           <div class="notes">
             Or maybe it's not just microtasks that you're waiting on.
             Maybe you've got some timers or event callbacks that you're waiting on.
@@ -630,17 +676,23 @@ it('should add a new list item', (<span class="superfluous">done</span>) => {
           <div style="font-size: 4em">Performance</div>
         </section>
 
+        <section data-background-image="css/dinosaur-flock.gif"></section>
+
         <section>
           <pre><code>
 this.zone.runOutsideAngular(() => {
-  doSneakyStuff();
+  paint();
 });
           </code></pre>
           <pre class="fragment"><code>
 this.zone.run(() => {
-  doNonSneakyStuff();
+  calculate();
 });         
           </code></pre>
+        </section>
+
+        <section>
+          <div style="font-size: 4em">Fun</div>
         </section>
 
         <section data-background-image="css/Joda_paleontologist.jpg">
@@ -697,10 +749,11 @@ this.zone.run(() => {
       const promises = document.getElementById('promises');
       promises.addEventListener('click', function () {
         this.classList.add('gone');
+        document.querySelector('.fake-async').classList.add('showing');
       })
 
       const microtaskQueue = document.getElementById('microtask-queue');
-      const numberOfTasks = 3;
+      const numberOfTasks = 2;
       for (let i = 0; i < numberOfTasks; i++) {
         microtaskQueue.addTask('microtask');
       }
@@ -729,7 +782,7 @@ this.zone.run(() => {
           .forEach((li, index) => {
             setTimeout(() => {
               li.classList.add('done');
-            }, index * 1000);
+            }, (index + 1) * 1000);
           })
       });
 

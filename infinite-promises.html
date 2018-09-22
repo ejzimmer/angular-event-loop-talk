@@ -39,7 +39,8 @@
       }
 
       function addThen() {
-        document.getElementById('promises').innerHTML = numberOfMicrotasks++;
+        document.getElementById('promises')
+                    .innerHTML = numberOfMicrotasks++;
         Promise.resolve().then(addThen);  
       }
     </script>
