@@ -1,27 +1,25 @@
 <template id="queue">
   <style>
     :host {
-      --container-colour: orange;
       display: block;
       width: var(--queue-width);
-      height: 4vw;
+      height: calc(var(--queue-width) * .5);
       position: relative;
-      border: 4px solid var(--container-colour);
+      border: 16px solid var(--container-colour);
       border-top-color: transparent;
       align-self: flex-end;
-      margin: 0 auto;
-      filter: drop-shadow(2px 2px 1px var(--shadow-colour));
     }
     :host::before, :host::after {
       content: '';
-      width: 2vw;
-      height: 2vw;
+      --curl-width: calc(var(--queue-width) / 4);
+      width: var(--curl-width);
+      height: var(--curl-width);
       display: block;
-      border: 4px solid var(--container-colour);
+      border: 16px solid var(--container-colour);
       border-radius: 50%;
       border-bottom-color: transparent;
       border-right-color: transparent;
-      transform: rotate(.125turn);
+      transform: translateY(16px) rotate(.125turn);
       position: absolute;
       bottom: calc(100% - 1vw - 4px);
     }
@@ -33,10 +31,10 @@
     }
 
     .task {
-      width: 60px;
-      height: 80px;
+      width: calc(var(--queue-width) * .8);
+      height: var(--queue-width);
       background-color: white;
-      border: 2px solid black;
+      border: 4px solid black;
       flex-shrink: 0;
       display: flex;
       transition: left .5s linear, bottom .5s linear, height 3s linear;
@@ -52,7 +50,7 @@
       font-family: 'Courier New', Courier, monospace;
       font-weight: bold;
       overflow: hidden;
-      font-size: 2em;
+      font-size: 3em;
     }
 
     .task.browser {
@@ -74,6 +72,12 @@
       color: white;
       border-color: white;
       background-color: red;
+    }
+    .task.necessary {
+      background-color: rgb(var(--green));
+    }
+    .task.unnecessary {
+      border-color: #aaa;
     }
 
     .task.animation {
@@ -149,22 +153,26 @@
       return this.getTasks().length;
     }
 
-    async runTask() {
+    async runTask(time) {
       if (this.type === 'animation') {
         return this.runAnimationTasks();
       }
 
       const firstTask = this.getTask(0);
       if (firstTask) {
-        await this.startTask(firstTask);
+        let duration = time || this.getRandomTime();
+        if (firstTask.classList.contains('repeating')) {
+          this.addTask('repeating');
+          duration = 2;
+        }
+        await this.startTask(firstTask, duration);
       }
     }
 
-    startTask(task) {
+    startTask(task, duration) {
       let resolveTask;
       const taskPromise = new Promise(resolve => resolveTask = resolve);
 
-      const duration = this.getRandomTime();
       task.style.transitionDuration = `.5s, .5s, ${duration}s`;
       task.style.height = 0;
 
@@ -196,8 +204,8 @@
     }
 
     positionTask(task, index) {
-      task.style.right = `${index * 5}px`;
-      task.style.bottom = `${index * 5}px`;
+      task.style.right = `${index * 8}px`;
+      task.style.bottom = `${index * 8}px`;
       task.style.zIndex = index * -1;			
     }
 

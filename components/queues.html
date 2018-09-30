@@ -4,6 +4,9 @@
       display: flex;
       justify-content: space-around;
       position: relative;
+      --queue-width: 100px;
+      margin: 0 auto;
+      min-height: calc(var(--queue-width * 2));
     }
     rendering-pipeline {
       max-width: 25%;
@@ -42,7 +45,15 @@
 
     }
 
+    startTimer() {
+      this.pipeline.timerCount();
+      this.selector.startTimer();
+    }
+
     addTask(taskType) {
+      if (this.pipeline.startTimer && !this.pipeline.interval) {
+        this.pipeline.startTimer();
+      }
       const queue = this.findQueue(taskType);      
       queue.addTask(taskType);
     }
